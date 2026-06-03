@@ -3,11 +3,18 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "check": "node --check api/index.js && node --check api/proxy.js",
+    "build": "npm run sync:uv",
+    "sync:uv": "node scripts/sync-ultraviolet-assets.js",
+    "check": "node --check api/index.js && node --check api/proxy.js && node --check scripts/sync-ultraviolet-assets.js",
     "test": "npm run check"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "@mercuryworkshop/bare-mux": "^2.1.9",
+    "@mercuryworkshop/epoxy-transport": "^3.0.1",
+    "@titaniumnetwork-dev/ultraviolet": "^3.2.10"
+  }
 }
