@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hello from connor</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --ink: #f8fbff;
+        --muted: #a9b5c8;
+        --cyan: #29d8ff;
+        --lime: #9cff58;
+        --pink: #ff4eb8;
+        --violet: #8f6cff;
+        --bg: #071018;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        overflow: hidden;
+        color: var(--ink);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at 18% 20%, rgba(41, 216, 255, 0.24), transparent 28rem),
+          radial-gradient(circle at 82% 75%, rgba(156, 255, 88, 0.18), transparent 24rem),
+          linear-gradient(135deg, #071018 0%, #101525 44%, #080a12 100%);
+      }
+
+      body::before,
+      body::after {
+        position: fixed;
+        inset: auto;
+        width: 42vmin;
+        height: 42vmin;
+        border-radius: 999px;
+        filter: blur(18px);
+        content: "";
+        opacity: 0.72;
+        pointer-events: none;
+        mix-blend-mode: screen;
+      }
+
+      body::before {
+        top: 10%;
+        left: 8%;
+        background: conic-gradient(from 90deg, var(--cyan), var(--pink), var(--lime), var(--cyan));
+        animation: drift-one 12s ease-in-out infinite alternate;
+      }
+
+      body::after {
+        right: 7%;
+        bottom: 8%;
+        background: conic-gradient(from 220deg, var(--lime), var(--violet), var(--cyan), var(--lime));
+        animation: drift-two 14s ease-in-out infinite alternate;
+      }
+
+      main {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        min-height: 100vh;
+        place-items: center;
+        padding: clamp(1.25rem, 4vw, 4rem);
+      }
+
+      .stage {
+        width: min(100%, 980px);
+        text-align: center;
+      }
+
+      .sparkline {
+        width: min(76vw, 520px);
+        height: 2px;
+        margin: 0 auto clamp(1.25rem, 3vw, 2rem);
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgba(248, 251, 255, 0.18);
+      }
+
+      .sparkline::before {
+        display: block;
+        width: 42%;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, transparent, var(--cyan), var(--lime), transparent);
+        content: "";
+        animation: sweep 2.8s ease-in-out infinite;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(3rem, 11vw, 8.75rem);
+        font-weight: 900;
+        letter-spacing: 0;
+        line-height: 0.92;
+        text-wrap: balance;
+      }
+
+      .word {
+        display: inline-block;
+        opacity: 0;
+        transform: translateY(0.6em) rotateX(55deg);
+        animation: rise 900ms cubic-bezier(0.2, 0.9, 0.2, 1.1) forwards;
+      }
+
+      .word:nth-child(2) {
+        animation-delay: 160ms;
+      }
+
+      .word:nth-child(3) {
+        animation-delay: 320ms;
+      }
+
+      .word:last-child {
+        color: transparent;
+        background: linear-gradient(90deg, var(--cyan), var(--lime), var(--pink));
+        background-clip: text;
+        -webkit-background-clip: text;
+        animation-delay: 480ms;
+        text-shadow: 0 0 38px rgba(41, 216, 255, 0.35);
+      }
+
+      .pulse {
+        width: min(82vw, 680px);
+        height: 1px;
+        margin: clamp(1.4rem, 4vw, 2.6rem) auto 0;
+        background: linear-gradient(90deg, transparent, rgba(248, 251, 255, 0.8), transparent);
+        transform-origin: center;
+        animation: pulse 2.6s ease-in-out infinite;
+      }
+
+      canvas {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      @keyframes rise {
+        to {
+          opacity: 1;
+          transform: translateY(0) rotateX(0);
+        }
+      }
+
+      @keyframes sweep {
+        0% {
+          transform: translateX(-110%);
+        }
+
+        100% {
+          transform: translateX(250%);
+        }
+      }
+
+      @keyframes pulse {
+        0%, 100% {
+          opacity: 0.3;
+          transform: scaleX(0.72);
+        }
+
+        50% {
+          opacity: 1;
+          transform: scaleX(1);
+        }
+      }
+
+      @keyframes drift-one {
+        to {
+          transform: translate(12vw, 10vh) rotate(80deg) scale(1.15);
+        }
+      }
+
+      @keyframes drift-two {
+        to {
+          transform: translate(-10vw, -12vh) rotate(-70deg) scale(1.05);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 1ms !important;
+          animation-iteration-count: 1 !important;
+          scroll-behavior: auto !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="particles" aria-hidden="true"></canvas>
+    <main>
+      <section class="stage" aria-label="Home">
+        <div class="sparkline"></div>
+        <h1>
+          <span class="word">Hello</span>
+          <span class="word">from</span>
+          <span class="word">connor</span>
+        </h1>
+        <div class="pulse"></div>
+      </section>
+    </main>
+    <script>
+      const canvas = document.querySelector("#particles");
+      const context = canvas.getContext("2d");
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let particles = [];
+      let width = 0;
+      let height = 0;
+      let ratio = 1;
+
+      function resize() {
+        ratio = Math.min(window.devicePixelRatio || 1, 2);
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = Math.floor(width * ratio);
+        canvas.height = Math.floor(height * ratio);
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
+        context.setTransform(ratio, 0, 0, ratio, 0, 0);
+        particles = Array.from({ length: reducedMotion ? 24 : 82 }, () => ({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: Math.random() * 2.4 + 0.7,
+          speed: Math.random() * 0.42 + 0.12,
+          hue: Math.random() > 0.5 ? 188 : 92,
+          phase: Math.random() * Math.PI * 2
+        }));
+      }
+
+      function draw(time = 0) {
+        context.clearRect(0, 0, width, height);
+
+        particles.forEach((particle) => {
+          const wobble = Math.sin(time * 0.0015 + particle.phase) * 0.55;
+          particle.y -= reducedMotion ? 0 : particle.speed;
+          particle.x += reducedMotion ? 0 : wobble;
+
+          if (particle.y < -8) {
+            particle.y = height + 8;
+            particle.x = Math.random() * width;
+          }
+
+          context.beginPath();
+          context.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+          context.fillStyle = `hsla(${particle.hue}, 96%, 68%, 0.72)`;
+          context.shadowBlur = 16;
+          context.shadowColor = `hsla(${particle.hue}, 96%, 68%, 0.8)`;
+          context.fill();
+        });
+
+        context.shadowBlur = 0;
+        window.requestAnimationFrame(draw);
+      }
+
+      window.addEventListener("resize", resize);
+      resize();
+      draw();
+    </script>
+  </body>
+</html>
