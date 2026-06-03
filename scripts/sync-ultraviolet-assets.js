@@ -3,17 +3,21 @@ const path = require("node:path");
 const { uvPath } = require("@titaniumnetwork-dev/ultraviolet");
 
 const root = path.resolve(__dirname, "..");
+const output = path.join(root, "public");
 
 function copyFile(source, target) {
   fs.mkdirSync(path.dirname(target), { recursive: true });
   fs.copyFileSync(source, target);
 }
 
+fs.rmSync(output, { force: true, recursive: true });
+copyFile(path.join(root, "index.html"), path.join(output, "index.html"));
+
 for (const file of ["uv.bundle.js", "uv.client.js", "uv.handler.js", "uv.sw.js", "sw.js"]) {
-  copyFile(path.join(uvPath, file), path.join(root, file));
+  copyFile(path.join(uvPath, file), path.join(output, file));
 }
 
-fs.writeFileSync(path.join(root, "uv.config.js"), `/*global Ultraviolet*/
+fs.writeFileSync(path.join(output, "uv.config.js"), `/*global Ultraviolet*/
 self.__uv$config = {
   prefix: "/service/",
   encodeUrl: Ultraviolet.codec.xor.encode,
@@ -28,13 +32,13 @@ self.__uv$config = {
 
 copyFile(
   path.join(root, "node_modules", "@mercuryworkshop", "bare-mux", "dist", "index.mjs"),
-  path.join(root, "bare-mux", "index.mjs")
+  path.join(output, "bare-mux", "index.mjs")
 );
 copyFile(
   path.join(root, "node_modules", "@mercuryworkshop", "bare-mux", "dist", "worker.js"),
-  path.join(root, "bare-mux", "worker.js")
+  path.join(output, "bare-mux", "worker.js")
 );
 copyFile(
   path.join(root, "node_modules", "@mercuryworkshop", "epoxy-transport", "dist", "index.mjs"),
-  path.join(root, "epoxy", "index.mjs")
+  path.join(output, "epoxy", "index.mjs")
 );

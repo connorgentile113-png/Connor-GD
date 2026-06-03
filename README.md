@@ -4,5 +4,5 @@ A Vercel-powered browser-style web proxy using Ultraviolet, Node.js, tabs, and a
 
 ## Scripts
 
-- `npm run build` syncs the Ultraviolet browser assets into the static Vercel output.
+- `npm run build` syncs the Ultraviolet browser assets into `public/` for Vercel.
 - `npm test` checks the Node.js serverless functions for syntax errors.
