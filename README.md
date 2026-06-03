@@ -1,6 +1,6 @@
 # Connor Web
 
-A Vercel-powered browser-style web proxy at `/browser/` using Ultraviolet, Node.js, tabs, DuckDuckGo search, and a Chrome-inspired address bar.
+Connor Gentile-DePaul's portfolio site, with a Vercel-powered browser-style web proxy at `/browser/` using Ultraviolet, Node.js, tabs, DuckDuckGo search, and a Chrome-inspired address bar.
 
 ## Scripts
 

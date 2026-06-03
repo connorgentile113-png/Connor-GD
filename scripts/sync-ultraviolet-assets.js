@@ -11,21 +11,8 @@ function copyFile(source, target) {
 }
 
 fs.rmSync(output, { force: true, recursive: true });
+copyFile(path.join(root, "portfolio.html"), path.join(output, "index.html"));
 copyFile(path.join(root, "index.html"), path.join(output, "browser", "index.html"));
-fs.writeFileSync(path.join(output, "index.html"), `<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="refresh" content="0; url=/browser/">
-    <title>Connor Web</title>
-    <script>location.replace("/browser/");</script>
-  </head>
-  <body>
-    <a href="/browser/">Open Connor Web</a>
-  </body>
-</html>
-`);
 
 for (const file of ["uv.bundle.js", "uv.client.js", "uv.handler.js", "uv.sw.js", "sw.js"]) {
   copyFile(path.join(uvPath, file), path.join(output, file));
