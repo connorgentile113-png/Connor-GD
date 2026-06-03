@@ -10,9 +10,27 @@ function copyFile(source, target) {
   fs.copyFileSync(source, target);
 }
 
+function copyDirectory(source, target) {
+  if (!fs.existsSync(source)) {
+    return;
+  }
+
+  for (const entry of fs.readdirSync(source, { withFileTypes: true })) {
+    const sourcePath = path.join(source, entry.name);
+    const targetPath = path.join(target, entry.name);
+
+    if (entry.isDirectory()) {
+      copyDirectory(sourcePath, targetPath);
+    } else if (entry.isFile()) {
+      copyFile(sourcePath, targetPath);
+    }
+  }
+}
+
 fs.rmSync(output, { force: true, recursive: true });
 copyFile(path.join(root, "portfolio.html"), path.join(output, "index.html"));
 copyFile(path.join(root, "index.html"), path.join(output, "browser", "index.html"));
+copyDirectory(path.join(root, "assets"), path.join(output, "assets"));
 
 for (const file of ["uv.bundle.js", "uv.client.js", "uv.handler.js", "uv.sw.js", "sw.js"]) {
   copyFile(path.join(uvPath, file), path.join(output, file));
