@@ -3,17 +3,24 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Hello from connor</title>
+    <title>Connor Web</title>
     <style>
       :root {
         color-scheme: dark;
-        --ink: #f8fbff;
-        --muted: #a9b5c8;
-        --cyan: #29d8ff;
-        --lime: #9cff58;
-        --pink: #ff4eb8;
-        --violet: #8f6cff;
-        --bg: #071018;
+        --desktop-blue: #0067b8;
+        --desktop-deep: #004b90;
+        --desktop-light: #41c7ff;
+        --glass: rgba(244, 247, 251, 0.92);
+        --chrome: #eef2f6;
+        --chrome-dark: #d7dde5;
+        --border: #9aa7b4;
+        --ink: #17212b;
+        --muted: #536170;
+        --accent: #0078d7;
+        --accent-dark: #005a9e;
+        --ok: #35a853;
+        --warn: #d45a24;
+        --shadow: rgba(0, 0, 0, 0.42);
       }
 
       * {
@@ -25,246 +32,1036 @@
         margin: 0;
         overflow: hidden;
         color: var(--ink);
-        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-family: "Segoe UI", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
         background:
-          radial-gradient(circle at 18% 20%, rgba(41, 216, 255, 0.24), transparent 28rem),
-          radial-gradient(circle at 82% 75%, rgba(156, 255, 88, 0.18), transparent 24rem),
-          linear-gradient(135deg, #071018 0%, #101525 44%, #080a12 100%);
+          linear-gradient(116deg, transparent 0 47%, rgba(255, 255, 255, 0.18) 47.2% 47.8%, transparent 48%),
+          linear-gradient(64deg, transparent 0 48%, rgba(95, 220, 255, 0.28) 48.2% 49%, transparent 49.2%),
+          linear-gradient(135deg, #0058a8 0%, #0086d6 44%, #003f7a 100%);
       }
 
-      body::before,
-      body::after {
+      button,
+      input {
+        font: inherit;
+      }
+
+      button {
+        border: 0;
+        cursor: pointer;
+      }
+
+      .desktop {
+        position: relative;
+        display: grid;
+        min-height: 100vh;
+        padding: 22px 22px 52px;
+        place-items: center;
+      }
+
+      .desktop::before {
         position: fixed;
-        inset: auto;
-        width: 42vmin;
-        height: 42vmin;
-        border-radius: 999px;
-        filter: blur(18px);
+        inset: 0;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 100%),
+          linear-gradient(0deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 100%);
+        background-size: 96px 96px;
         content: "";
-        opacity: 0.72;
+        opacity: 0.2;
         pointer-events: none;
-        mix-blend-mode: screen;
       }
 
-      body::before {
-        top: 10%;
-        left: 8%;
-        background: conic-gradient(from 90deg, var(--cyan), var(--pink), var(--lime), var(--cyan));
-        animation: drift-one 12s ease-in-out infinite alternate;
+      .desktop-icon {
+        position: fixed;
+        top: 26px;
+        left: 22px;
+        display: grid;
+        gap: 8px;
+        width: 88px;
+        justify-items: center;
+        padding: 8px 6px;
+        color: #fff;
+        text-align: center;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65);
       }
 
-      body::after {
-        right: 7%;
-        bottom: 8%;
-        background: conic-gradient(from 220deg, var(--lime), var(--violet), var(--cyan), var(--lime));
-        animation: drift-two 14s ease-in-out infinite alternate;
+      .desktop-icon:focus-visible,
+      .desktop-icon:hover {
+        outline: 1px solid rgba(255, 255, 255, 0.72);
+        background: rgba(255, 255, 255, 0.14);
       }
 
-      main {
+      .tile-icon,
+      .brand-icon {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 3px;
+      }
+
+      .tile-icon {
+        width: 34px;
+        height: 34px;
+      }
+
+      .brand-icon {
+        width: 18px;
+        height: 18px;
+      }
+
+      .tile-icon span,
+      .brand-icon span {
+        background: #fff;
+        box-shadow: inset 0 0 0 1px rgba(0, 120, 215, 0.26);
+      }
+
+      .browser-window {
         position: relative;
         z-index: 1;
         display: grid;
-        min-height: 100vh;
-        place-items: center;
-        padding: clamp(1.25rem, 4vw, 4rem);
+        grid-template-rows: 32px 40px 48px minmax(0, 1fr) 24px;
+        width: min(1180px, calc(100vw - 44px));
+        height: min(760px, calc(100vh - 86px));
+        min-height: 520px;
+        overflow: hidden;
+        border: 1px solid rgba(18, 40, 60, 0.7);
+        border-radius: 4px;
+        background: var(--chrome);
+        box-shadow: 0 26px 80px var(--shadow);
+        transition: width 180ms ease, height 180ms ease, opacity 160ms ease, transform 180ms ease;
       }
 
-      .stage {
-        width: min(100%, 980px);
+      .browser-window.is-maximized {
+        width: calc(100vw - 20px);
+        height: calc(100vh - 62px);
+      }
+
+      .browser-window.is-minimized,
+      .browser-window.is-closed {
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(24px) scale(0.98);
+      }
+
+      .titlebar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #fff;
+        background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+        user-select: none;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+        padding-left: 10px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .window-controls {
+        display: flex;
+        align-self: stretch;
+      }
+
+      .window-button {
+        display: grid;
+        width: 46px;
+        place-items: center;
+        color: #fff;
+        background: transparent;
+      }
+
+      .window-button svg,
+      .tool-button svg,
+      .new-tab svg,
+      .go-button svg,
+      .tab-close svg,
+      .home-search button svg {
+        width: 16px;
+        height: 16px;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .window-button:hover {
+        background: rgba(255, 255, 255, 0.18);
+      }
+
+      .window-button.close:hover {
+        background: #e81123;
+      }
+
+      .tabs-row {
+        display: flex;
+        align-items: end;
+        gap: 3px;
+        padding: 6px 8px 0;
+        border-bottom: 1px solid var(--chrome-dark);
+        background: #e8edf4;
+      }
+
+      .tabs {
+        display: flex;
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+      }
+
+      .tab {
+        display: grid;
+        grid-template-columns: 16px minmax(0, 1fr) 22px;
+        align-items: center;
+        gap: 7px;
+        width: min(220px, 30vw);
+        min-width: 112px;
+        height: 34px;
+        padding: 0 5px 0 10px;
+        border: 1px solid transparent;
+        border-bottom: 0;
+        border-radius: 4px 4px 0 0;
+        color: var(--muted);
+        background: transparent;
+      }
+
+      .tab[aria-selected="true"] {
+        color: var(--ink);
+        border-color: var(--chrome-dark);
+        background: var(--chrome);
+      }
+
+      .tab-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--ok);
+        box-shadow: 0 0 0 3px rgba(53, 168, 83, 0.16);
+      }
+
+      .tab-title {
+        overflow: hidden;
+        font-size: 12px;
+        text-align: left;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .tab-close {
+        display: grid;
+        width: 22px;
+        height: 22px;
+        border-radius: 2px;
+        place-items: center;
+        color: inherit;
+        background: transparent;
+      }
+
+      .tab-close:hover {
+        background: rgba(0, 0, 0, 0.08);
+      }
+
+      .new-tab {
+        display: grid;
+        width: 34px;
+        height: 32px;
+        margin-bottom: 1px;
+        border-radius: 3px;
+        place-items: center;
+        color: var(--muted);
+        background: transparent;
+      }
+
+      .new-tab:hover {
+        background: rgba(0, 0, 0, 0.08);
+      }
+
+      .toolbar {
+        display: grid;
+        grid-template-columns: auto auto auto auto minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 9px;
+        border-bottom: 1px solid var(--chrome-dark);
+        background: var(--chrome);
+      }
+
+      .tool-button,
+      .go-button {
+        display: grid;
+        width: 34px;
+        height: 32px;
+        border-radius: 3px;
+        place-items: center;
+        color: #26323d;
+        background: transparent;
+      }
+
+      .tool-button:hover,
+      .go-button:hover {
+        background: #dce3ec;
+      }
+
+      .tool-button:disabled {
+        cursor: default;
+        opacity: 0.35;
+      }
+
+      .address-shell {
+        display: grid;
+        grid-template-columns: 18px minmax(0, 1fr);
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+        height: 32px;
+        padding: 0 10px;
+        border: 1px solid #bcc6d1;
+        border-radius: 3px;
+        background: #fff;
+      }
+
+      .lock {
+        width: 10px;
+        height: 12px;
+        margin-left: 3px;
+        border: 1.8px solid var(--ok);
+        border-radius: 2px;
+        position: relative;
+      }
+
+      .lock::before {
+        position: absolute;
+        top: -8px;
+        left: 1px;
+        width: 6px;
+        height: 7px;
+        border: 1.8px solid var(--ok);
+        border-bottom: 0;
+        border-radius: 6px 6px 0 0;
+        content: "";
+      }
+
+      #addressInput {
+        width: 100%;
+        min-width: 0;
+        border: 0;
+        outline: 0;
+        color: var(--ink);
+        background: transparent;
+        font-size: 14px;
+      }
+
+      .viewport {
+        position: relative;
+        min-height: 0;
+        overflow: hidden;
+        background:
+          linear-gradient(135deg, rgba(0, 120, 215, 0.08), transparent 38%),
+          #f7f9fc;
+      }
+
+      .loading-bar {
+        position: absolute;
+        z-index: 3;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--accent), #22b14c, #f7b731);
+        opacity: 0;
+        transition: opacity 120ms ease, width 260ms ease;
+      }
+
+      .browser-window.is-loading .loading-bar {
+        width: 72%;
+        opacity: 1;
+        animation: load-slide 1.2s ease-in-out infinite alternate;
+      }
+
+      iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background: #fff;
+      }
+
+      .home-screen {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        align-content: center;
+        justify-items: center;
+        gap: 26px;
+        padding: 34px;
+        background:
+          linear-gradient(115deg, rgba(0, 120, 215, 0.11), transparent 44%),
+          linear-gradient(225deg, rgba(53, 168, 83, 0.12), transparent 42%),
+          #f6f8fb;
+      }
+
+      .home-screen[hidden],
+      iframe[hidden] {
+        display: none;
+      }
+
+      .home-logo {
+        display: grid;
+        gap: 12px;
+        justify-items: center;
         text-align: center;
       }
 
-      .sparkline {
-        width: min(76vw, 520px);
-        height: 2px;
-        margin: 0 auto clamp(1.25rem, 3vw, 2rem);
-        overflow: hidden;
-        border-radius: 999px;
-        background: rgba(248, 251, 255, 0.18);
+      .home-logo-mark {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 5px;
+        width: 68px;
+        height: 68px;
+        transform: perspective(120px) rotateY(-13deg);
       }
 
-      .sparkline::before {
-        display: block;
-        width: 42%;
-        height: 100%;
-        border-radius: inherit;
-        background: linear-gradient(90deg, transparent, var(--cyan), var(--lime), transparent);
-        content: "";
-        animation: sweep 2.8s ease-in-out infinite;
+      .home-logo-mark span {
+        background: linear-gradient(135deg, #0078d7, #35a853);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55), 0 12px 30px rgba(0, 120, 215, 0.24);
       }
 
-      h1 {
+      .home-logo h1 {
         margin: 0;
-        font-size: clamp(3rem, 11vw, 8.75rem);
-        font-weight: 900;
+        color: #102033;
+        font-size: clamp(2.7rem, 8vw, 6.4rem);
+        font-weight: 800;
         letter-spacing: 0;
-        line-height: 0.92;
-        text-wrap: balance;
+        line-height: 0.96;
       }
 
-      .word {
-        display: inline-block;
-        opacity: 0;
-        transform: translateY(0.6em) rotateX(55deg);
-        animation: rise 900ms cubic-bezier(0.2, 0.9, 0.2, 1.1) forwards;
+      .home-search {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 46px;
+        width: min(680px, 100%);
+        height: 48px;
+        border: 1px solid #bac5d1;
+        border-radius: 4px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 12px 26px rgba(21, 37, 54, 0.12);
       }
 
-      .word:nth-child(2) {
-        animation-delay: 160ms;
+      #homeInput {
+        min-width: 0;
+        padding: 0 16px;
+        border: 0;
+        outline: 0;
+        color: var(--ink);
+        background: transparent;
+        font-size: 16px;
       }
 
-      .word:nth-child(3) {
-        animation-delay: 320ms;
+      .home-search button {
+        display: grid;
+        place-items: center;
+        color: #fff;
+        background: var(--accent);
       }
 
-      .word:last-child {
-        color: transparent;
-        background: linear-gradient(90deg, var(--cyan), var(--lime), var(--pink));
-        background-clip: text;
-        -webkit-background-clip: text;
-        animation-delay: 480ms;
-        text-shadow: 0 0 38px rgba(41, 216, 255, 0.35);
+      .quick-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        max-width: 720px;
       }
 
-      .pulse {
-        width: min(82vw, 680px);
-        height: 1px;
-        margin: clamp(1.4rem, 4vw, 2.6rem) auto 0;
-        background: linear-gradient(90deg, transparent, rgba(248, 251, 255, 0.8), transparent);
-        transform-origin: center;
-        animation: pulse 2.6s ease-in-out infinite;
+      .quick-links button {
+        min-width: 118px;
+        padding: 10px 13px;
+        border: 1px solid #c4ced9;
+        border-radius: 4px;
+        color: #203040;
+        background: rgba(255, 255, 255, 0.78);
       }
 
-      canvas {
+      .quick-links button:hover {
+        border-color: var(--accent);
+        background: #fff;
+      }
+
+      .statusbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 0 10px;
+        border-top: 1px solid #c7d0da;
+        color: #4c5967;
+        background: #edf1f6;
+        font-size: 12px;
+      }
+
+      .statusbar span {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .taskbar {
         position: fixed;
-        inset: 0;
-        z-index: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
+        z-index: 2;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: grid;
+        grid-template-columns: 48px auto 1fr auto;
+        align-items: center;
+        height: 40px;
+        color: #fff;
+        background: rgba(22, 26, 31, 0.9);
+        backdrop-filter: blur(12px);
       }
 
-      @keyframes rise {
+      .start-button,
+      .task-app {
+        display: grid;
+        height: 40px;
+        place-items: center;
+        color: #fff;
+        background: transparent;
+      }
+
+      .start-button {
+        width: 48px;
+      }
+
+      .start-button:hover,
+      .task-app:hover,
+      .task-app.is-active {
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .start-glyph {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2px;
+        width: 18px;
+        height: 18px;
+      }
+
+      .start-glyph span {
+        background: currentColor;
+      }
+
+      .task-app {
+        grid-template-columns: 22px auto;
+        gap: 8px;
+        min-width: 146px;
+        padding: 0 12px;
+        border-left: 1px solid rgba(255, 255, 255, 0.08);
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+        font-size: 12px;
+      }
+
+      .task-clock {
+        padding: 0 14px;
+        font-size: 12px;
+        text-align: right;
+      }
+
+      @keyframes load-slide {
+        from {
+          transform: translateX(0);
+        }
+
         to {
-          opacity: 1;
-          transform: translateY(0) rotateX(0);
+          transform: translateX(38%);
         }
       }
 
-      @keyframes sweep {
-        0% {
-          transform: translateX(-110%);
+      @media (max-width: 720px) {
+        .desktop {
+          padding: 0 0 40px;
         }
 
-        100% {
-          transform: translateX(250%);
-        }
-      }
-
-      @keyframes pulse {
-        0%, 100% {
-          opacity: 0.3;
-          transform: scaleX(0.72);
+        .desktop-icon {
+          display: none;
         }
 
-        50% {
-          opacity: 1;
-          transform: scaleX(1);
+        .browser-window,
+        .browser-window.is-maximized {
+          width: 100vw;
+          height: calc(100vh - 40px);
+          min-height: 0;
+          border-right: 0;
+          border-left: 0;
+          border-radius: 0;
         }
-      }
 
-      @keyframes drift-one {
-        to {
-          transform: translate(12vw, 10vh) rotate(80deg) scale(1.15);
+        .browser-window {
+          grid-template-rows: 32px 38px 46px minmax(0, 1fr) 24px;
         }
-      }
 
-      @keyframes drift-two {
-        to {
-          transform: translate(-10vw, -12vh) rotate(-70deg) scale(1.05);
+        .tab {
+          min-width: 96px;
+          width: 42vw;
         }
-      }
 
-      @media (prefers-reduced-motion: reduce) {
-        *,
-        *::before,
-        *::after {
-          animation-duration: 1ms !important;
-          animation-iteration-count: 1 !important;
-          scroll-behavior: auto !important;
+        .toolbar {
+          grid-template-columns: auto auto auto minmax(0, 1fr) auto;
+        }
+
+        .toolbar .tool-button[data-action="home"] {
+          display: none;
+        }
+
+        .home-screen {
+          padding: 24px 18px;
+        }
+
+        .quick-links button {
+          min-width: 96px;
+          flex: 1 1 30%;
+        }
+
+        .statusbar span:last-child,
+        .task-app span:last-child {
+          display: none;
         }
       }
     </style>
   </head>
   <body>
-    <canvas id="particles" aria-hidden="true"></canvas>
-    <main>
-      <section class="stage" aria-label="Home">
-        <div class="sparkline"></div>
-        <h1>
-          <span class="word">Hello</span>
-          <span class="word">from</span>
-          <span class="word">connor</span>
-        </h1>
-        <div class="pulse"></div>
-      </section>
-    </main>
-    <script>
-      const canvas = document.querySelector("#particles");
-      const context = canvas.getContext("2d");
-      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      let particles = [];
-      let width = 0;
-      let height = 0;
-      let ratio = 1;
+    <div class="desktop">
+      <button class="desktop-icon" id="desktopIcon" type="button" aria-label="Open Connor Web">
+        <span class="tile-icon" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </span>
+        <span>Connor Web</span>
+      </button>
 
-      function resize() {
-        ratio = Math.min(window.devicePixelRatio || 1, 2);
-        width = window.innerWidth;
-        height = window.innerHeight;
-        canvas.width = Math.floor(width * ratio);
-        canvas.height = Math.floor(height * ratio);
-        canvas.style.width = `${width}px`;
-        canvas.style.height = `${height}px`;
-        context.setTransform(ratio, 0, 0, ratio, 0, 0);
-        particles = Array.from({ length: reducedMotion ? 24 : 82 }, () => ({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          radius: Math.random() * 2.4 + 0.7,
-          speed: Math.random() * 0.42 + 0.12,
-          hue: Math.random() > 0.5 ? 188 : 92,
-          phase: Math.random() * Math.PI * 2
-        }));
+      <section class="browser-window" id="browserWindow" aria-label="Connor Web browser">
+        <header class="titlebar">
+          <div class="brand">
+            <span class="brand-icon" aria-hidden="true">
+              <span></span><span></span><span></span><span></span>
+            </span>
+            <span>Connor Web</span>
+          </div>
+          <div class="window-controls">
+            <button class="window-button" type="button" data-window="minimize" aria-label="Minimize" title="Minimize">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18h12"></path></svg>
+            </button>
+            <button class="window-button" type="button" data-window="maximize" aria-label="Maximize" title="Maximize">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v10H7z"></path></svg>
+            </button>
+            <button class="window-button close" type="button" data-window="close" aria-label="Close" title="Close">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"></path></svg>
+            </button>
+          </div>
+        </header>
+
+        <div class="tabs-row">
+          <div class="tabs" id="tabs" role="tablist" aria-label="Open tabs"></div>
+          <button class="new-tab" id="newTab" type="button" aria-label="New tab" title="New tab">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+          </button>
+        </div>
+
+        <form class="toolbar" id="addressForm">
+          <button class="tool-button" type="button" data-action="back" aria-label="Back" title="Back">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+          </button>
+          <button class="tool-button" type="button" data-action="forward" aria-label="Forward" title="Forward">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+          </button>
+          <button class="tool-button" type="button" data-action="reload" aria-label="Reload" title="Reload">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"></path><path d="M20 4v6h-6"></path></svg>
+          </button>
+          <button class="tool-button" type="button" data-action="home" aria-label="Home" title="Home">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 11 8-7 8 7"></path><path d="M6 10v10h12V10"></path></svg>
+          </button>
+          <label class="address-shell" aria-label="Address">
+            <span class="lock" aria-hidden="true"></span>
+            <input id="addressInput" name="address" autocomplete="off" spellcheck="false" placeholder="Search or enter address">
+          </label>
+          <button class="go-button" type="submit" aria-label="Go" title="Go">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+          </button>
+        </form>
+
+        <div class="viewport">
+          <div class="loading-bar" id="loadingBar"></div>
+          <div class="home-screen" id="homeScreen">
+            <div class="home-logo">
+              <div class="home-logo-mark" aria-hidden="true">
+                <span></span><span></span><span></span><span></span>
+              </div>
+              <h1>Connor Web</h1>
+            </div>
+            <form class="home-search" id="homeForm">
+              <input id="homeInput" autocomplete="off" spellcheck="false" placeholder="Search or enter address">
+              <button type="submit" aria-label="Go">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+              </button>
+            </form>
+            <div class="quick-links" aria-label="Quick links">
+              <button type="button" data-url="https://example.com">Example</button>
+              <button type="button" data-url="https://developer.mozilla.org">MDN</button>
+              <button type="button" data-url="https://vercel.com">Vercel</button>
+              <button type="button" data-url="https://nodejs.org">Node.js</button>
+            </div>
+          </div>
+          <iframe id="webFrame" title="Connor Web page" sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-scripts" referrerpolicy="no-referrer" hidden></iframe>
+        </div>
+
+        <footer class="statusbar">
+          <span id="statusText">Ready</span>
+          <span>Node.js on Vercel</span>
+        </footer>
+      </section>
+
+      <nav class="taskbar" aria-label="Desktop taskbar">
+        <button class="start-button" type="button" aria-label="Start" title="Start">
+          <span class="start-glyph" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+          </span>
+        </button>
+        <button class="task-app is-active" id="taskApp" type="button">
+          <span class="brand-icon" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+          </span>
+          <span>Connor Web</span>
+        </button>
+        <span></span>
+        <time class="task-clock" id="clock"></time>
+      </nav>
+    </div>
+
+    <script>
+      const HOME_URL = "connor://home";
+      const browserWindow = document.querySelector("#browserWindow");
+      const desktopIcon = document.querySelector("#desktopIcon");
+      const taskApp = document.querySelector("#taskApp");
+      const tabsElement = document.querySelector("#tabs");
+      const frame = document.querySelector("#webFrame");
+      const homeScreen = document.querySelector("#homeScreen");
+      const addressForm = document.querySelector("#addressForm");
+      const addressInput = document.querySelector("#addressInput");
+      const homeForm = document.querySelector("#homeForm");
+      const homeInput = document.querySelector("#homeInput");
+      const statusText = document.querySelector("#statusText");
+      const clock = document.querySelector("#clock");
+      const navButtons = {
+        back: document.querySelector('[data-action="back"]'),
+        forward: document.querySelector('[data-action="forward"]')
+      };
+
+      let tabs = [createTab()];
+      let activeTabId = tabs[0].id;
+
+      function createTab(url = HOME_URL) {
+        return {
+          id: window.crypto.randomUUID ? window.crypto.randomUUID() : String(Date.now() + Math.random()),
+          title: "New tab",
+          url,
+          history: [url],
+          historyIndex: 0,
+          loading: false
+        };
       }
 
-      function draw(time = 0) {
-        context.clearRect(0, 0, width, height);
+      function activeTab() {
+        return tabs.find((tab) => tab.id === activeTabId) || tabs[0];
+      }
 
-        particles.forEach((particle) => {
-          const wobble = Math.sin(time * 0.0015 + particle.phase) * 0.55;
-          particle.y -= reducedMotion ? 0 : particle.speed;
-          particle.x += reducedMotion ? 0 : wobble;
+      function proxyUrl(url) {
+        return `/api/proxy?url=${encodeURIComponent(url)}`;
+      }
 
-          if (particle.y < -8) {
-            particle.y = height + 8;
-            particle.x = Math.random() * width;
+      function normalizeAddress(value) {
+        const input = value.trim();
+
+        if (!input || input.toLowerCase() === "home" || input.toLowerCase() === HOME_URL) {
+          return HOME_URL;
+        }
+
+        if (/^https?:\/\//i.test(input)) {
+          return input;
+        }
+
+        if (/^[a-z0-9.-]+\.[a-z]{2,}(:\d+)?(\/.*)?$/i.test(input)) {
+          return `https://${input}`;
+        }
+
+        return `https://duckduckgo.com/?q=${encodeURIComponent(input)}`;
+      }
+
+      function setStatus(text) {
+        statusText.textContent = text;
+      }
+
+      function setOpenState(open) {
+        browserWindow.classList.toggle("is-closed", !open);
+        browserWindow.classList.remove("is-minimized");
+        taskApp.classList.toggle("is-active", open);
+      }
+
+      function navigate(value, options = {}) {
+        const tab = activeTab();
+        const url = normalizeAddress(value);
+
+        tab.url = url;
+        tab.title = url === HOME_URL ? "New tab" : new URL(url).hostname;
+
+        if (options.replace) {
+          tab.history[tab.historyIndex] = url;
+        } else if (tab.history[tab.historyIndex] !== url) {
+          tab.history = tab.history.slice(0, tab.historyIndex + 1);
+          tab.history.push(url);
+          tab.historyIndex = tab.history.length - 1;
+        }
+
+        loadActiveTab();
+        render();
+      }
+
+      function loadActiveTab() {
+        const tab = activeTab();
+
+        if (tab.url === HOME_URL) {
+          frame.hidden = true;
+          frame.removeAttribute("src");
+          homeScreen.hidden = false;
+          tab.loading = false;
+          setStatus("Ready");
+          browserWindow.classList.remove("is-loading");
+          return;
+        }
+
+        homeScreen.hidden = true;
+        frame.hidden = false;
+        tab.loading = true;
+        browserWindow.classList.add("is-loading");
+        setStatus(`Loading ${tab.url}`);
+        frame.src = proxyUrl(tab.url);
+      }
+
+      function updateFromFrame(url, title) {
+        const tab = activeTab();
+
+        if (!url || tab.url === url) {
+          tab.title = title || tab.title;
+          render();
+          return;
+        }
+
+        tab.url = url;
+        tab.title = title || new URL(url).hostname;
+        tab.history = tab.history.slice(0, tab.historyIndex + 1);
+        tab.history.push(url);
+        tab.historyIndex = tab.history.length - 1;
+        render();
+      }
+
+      function render() {
+        const tab = activeTab();
+
+        tabsElement.innerHTML = tabs.map((item) => `
+          <button class="tab" type="button" role="tab" data-tab-id="${item.id}" aria-selected="${item.id === activeTabId}">
+            <span class="tab-dot" aria-hidden="true"></span>
+            <span class="tab-title">${escapeHtml(item.title)}</span>
+            <span class="tab-close" role="button" tabindex="-1" data-close-tab="${item.id}" aria-label="Close tab">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"></path></svg>
+            </span>
+          </button>
+        `).join("");
+
+        addressInput.value = tab.url === HOME_URL ? "" : tab.url;
+        navButtons.back.disabled = tab.historyIndex === 0;
+        navButtons.forward.disabled = tab.historyIndex >= tab.history.length - 1;
+        browserWindow.classList.toggle("is-loading", tab.loading);
+        document.title = `${tab.title} - Connor Web`;
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;");
+      }
+
+      function moveHistory(delta) {
+        const tab = activeTab();
+        const nextIndex = tab.historyIndex + delta;
+
+        if (nextIndex < 0 || nextIndex >= tab.history.length) {
+          return;
+        }
+
+        tab.historyIndex = nextIndex;
+        tab.url = tab.history[nextIndex];
+        loadActiveTab();
+        render();
+      }
+
+      function reload() {
+        const tab = activeTab();
+
+        if (tab.url === HOME_URL) {
+          setStatus("Ready");
+          return;
+        }
+
+        tab.loading = true;
+        browserWindow.classList.add("is-loading");
+        frame.src = `${proxyUrl(tab.url)}&refresh=${Date.now()}`;
+        render();
+      }
+
+      function openNewTab(url = HOME_URL) {
+        const tab = createTab(url);
+        tabs.push(tab);
+        activeTabId = tab.id;
+        loadActiveTab();
+        render();
+      }
+
+      function closeTab(id) {
+        const index = tabs.findIndex((tab) => tab.id === id);
+
+        if (index === -1) {
+          return;
+        }
+
+        tabs.splice(index, 1);
+
+        if (tabs.length === 0) {
+          tabs.push(createTab());
+        }
+
+        if (activeTabId === id) {
+          activeTabId = tabs[Math.max(0, index - 1)].id;
+          loadActiveTab();
+        }
+
+        render();
+      }
+
+      addressForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        navigate(addressInput.value);
+      });
+
+      homeForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        navigate(homeInput.value);
+        homeInput.value = "";
+      });
+
+      document.querySelector("#newTab").addEventListener("click", () => openNewTab());
+
+      tabsElement.addEventListener("click", (event) => {
+        const close = event.target.closest("[data-close-tab]");
+        const tabButton = event.target.closest("[data-tab-id]");
+
+        if (close) {
+          event.stopPropagation();
+          closeTab(close.dataset.closeTab);
+          return;
+        }
+
+        if (tabButton) {
+          activeTabId = tabButton.dataset.tabId;
+          loadActiveTab();
+          render();
+        }
+      });
+
+      document.querySelectorAll("[data-action]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const action = button.dataset.action;
+
+          if (action === "back") {
+            moveHistory(-1);
           }
 
-          context.beginPath();
-          context.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-          context.fillStyle = `hsla(${particle.hue}, 96%, 68%, 0.72)`;
-          context.shadowBlur = 16;
-          context.shadowColor = `hsla(${particle.hue}, 96%, 68%, 0.8)`;
-          context.fill();
-        });
+          if (action === "forward") {
+            moveHistory(1);
+          }
 
-        context.shadowBlur = 0;
-        window.requestAnimationFrame(draw);
+          if (action === "reload") {
+            reload();
+          }
+
+          if (action === "home") {
+            navigate(HOME_URL);
+          }
+        });
+      });
+
+      document.querySelectorAll("[data-window]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const action = button.dataset.window;
+
+          if (action === "minimize") {
+            browserWindow.classList.add("is-minimized");
+            taskApp.classList.remove("is-active");
+          }
+
+          if (action === "maximize") {
+            browserWindow.classList.toggle("is-maximized");
+          }
+
+          if (action === "close") {
+            setOpenState(false);
+          }
+        });
+      });
+
+      document.querySelector(".quick-links").addEventListener("click", (event) => {
+        const target = event.target.closest("[data-url]");
+
+        if (target) {
+          navigate(target.dataset.url);
+        }
+      });
+
+      frame.addEventListener("load", () => {
+        const tab = activeTab();
+        tab.loading = false;
+        browserWindow.classList.remove("is-loading");
+        setStatus(tab.url === HOME_URL ? "Ready" : tab.url);
+        render();
+      });
+
+      window.addEventListener("message", (event) => {
+        const data = event.data;
+
+        if (!data || data.type !== "connor-web:page") {
+          return;
+        }
+
+        updateFromFrame(data.url, data.title);
+        setStatus(data.url || "Ready");
+      });
+
+      taskApp.addEventListener("click", () => {
+        setOpenState(true);
+      });
+
+      desktopIcon.addEventListener("click", () => {
+        setOpenState(true);
+      });
+
+      function tickClock() {
+        const now = new Date();
+        clock.textContent = now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
       }
 
-      window.addEventListener("resize", resize);
-      resize();
-      draw();
+      tickClock();
+      window.setInterval(tickClock, 30000);
+      render();
     </script>
   </body>
 </html>
